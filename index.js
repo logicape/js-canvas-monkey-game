@@ -34,7 +34,7 @@ function getRnd(max) {
 
 //---------INSTANTIATIONS-----------//
 
-const monkey = new Monkey({
+const actor = new Actor({
     pos: {
         x: canvas.width / 2,
         y: canvas.height / 2
@@ -73,14 +73,14 @@ const plant3 = new Plant({
 function animate() {
     //c.fillStyle = 'black'
     //c.fillRect(0, 0, canvas.width, canvas.height)
-    monkey.update()
+    actor.update()
     plant1.update()
     plant2.update()
     plant3.update()
     placePlants()
     setTimeout(() => {
         window.requestAnimationFrame(animate)
-    }, "100")
+    }, "10")
 }
 
 animate()

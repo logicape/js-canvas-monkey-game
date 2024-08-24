@@ -2,7 +2,7 @@
 
 //---------CLASSES-----------//
 
-class Monkey {
+class Actor {
     constructor({ pos, velocity, direction }) {
         this.pos = pos,
             this.color = {
@@ -10,13 +10,18 @@ class Monkey {
                 inner: 'white'
             },
             this.size = {
-                width: 30,
-                height: 30
+                width: 20,
+                height: 20
             },
             this.velocity = velocity,
             this.direction = direction,
             this.health,
-            this.dirTendency = 1
+            this.dirTendency = 1,
+            this.age = 0,
+            this.lifeExpectancy = 650,
+            this.cyclesPerGrowth = 80,
+            this.unitGrowth = 5,
+            this.alive = true
     }
 
     move() {
@@ -154,8 +159,34 @@ class Monkey {
         }
     }
 
+    die() {
+        this.alive = false
+        //redraw as dead
+        //shrink by outer rim
+        this.size.width -= 10
+        this.size.height -= 10
+        this.pos.x +=5
+        this.pos.y +=5
+        c.fillStyle = 'grey'
+        c.fillRect (this.pos.x, this.pos.y, this.size.width, this.size.height)
+    }
+
+    cycleTurn() {
+        this.age += 1
+        //die of old age?
+        if (this.age > this.lifeExpectancy) {
+            this.die()
+            return
+        } else {
+            if (this.age % this.cyclesPerGrowth == 0) {
+                this.size.width += this.unitGrowth
+                this.size.height += this.unitGrowth
+            }
+        }
+    }
+
     undraw() {
-    	c.fillStyle = 'black'
+        c.fillStyle = 'black'
         c.fillRect(this.pos.x, this.pos.y, this.size.width, this.size.height)
     }
     draw() {
@@ -168,17 +199,25 @@ class Monkey {
 
     update() {
         //other code that affects the Monkey before it's drawn
-        this.undraw()
-        this.determineIfNewDirection()
-        this.move()
-        this.draw()
+        if (this.alive) {
+        	this.undraw()
+            this.determineIfNewDirection()
+            this.move()
+            this.draw()
+            this.cycleTurn()
+        } else {
+        	//what to do with Actor when dead
+        }
     }
 }
 
 class Plant {
     constructor({ pos }) {
         this.pos = pos,
-            this.color = 'green',
+            this.color = {
+            	leaf: 'green',
+            	stem: 'brown'
+            },
             this.unitSize = {
                 width: 20,
                 height: 20
@@ -197,7 +236,7 @@ class Plant {
     }
 
     growStem(direction) {
-        c.fillStyle = this.color
+        c.fillStyle = this.color.stem
         switch (direction) {
             case 1:
                 this.stemLength.n += 1
@@ -220,7 +259,7 @@ class Plant {
 
     growLeaf(direction) {
         let node
-        c.fillStyle = this.color
+        c.fillStyle = this.color.leaf
         switch (direction) {
             case 1:
                 node = getRnd(this.stemLength.n)
@@ -268,24 +307,21 @@ class Plant {
         //determine if the plant should grow
         if (getRnd(100) < this.growthRate * 100) {
             //grow plant place with n pixel overlap
-            //determine which side to try to grow off
+            //determine which direction to try to grow off
             switch (getRnd(4)) {
                 case 1: //N
                     //grow stem or leaf?
                     if (this.stemLength.n == 0) {
-                        console.log('growing a root')
                         this.growStem(1)
                     } else if (getRnd(100) < this.leafRate * this.stemLength.n) { // % to grow a leaf
                         this.growLeaf(1)
                     } else { // else grow a stem
-                        console.log('I got here from here')
                         this.growStem(1)
                     }
                     break
                 case 2: //E
                     //grow stem or leaf?
                     if (this.stemLength.e == 0) {
-                        console.log('growing a root')
                         this.growStem(2)
                     } else if (getRnd(100) < this.leafRate * this.stemLength.e) { // % to grow a leaf
                         this.growLeaf(2)
@@ -296,7 +332,6 @@ class Plant {
                 case 3: //S
                     //grow stem or leaf?
                     if (this.stemLength.s == 0) {
-                        console.log('growing a root')
                         this.growStem(3)
                     } else if (getRnd(100) < this.leafRate * this.stemLength.s) { // % to grow a leaf
                         this.growLeaf(3)
@@ -307,7 +342,6 @@ class Plant {
                 case 4: //W
                     //grow stem or leaf?
                     if (this.stemLength.w == 0) {
-                        console.log('growing a root')
                         this.growStem(4)
                     } else if (getRnd(100) < this.leafRate * this.stemLength.w) { // % to grow a leaf
                         this.growLeaf(4)
@@ -321,7 +355,7 @@ class Plant {
     }
 
     draw() {
-        c.fillStyle = this.color
+        c.fillStyle = this.color.stem
         c.fillRect(this.pos.x, this.pos.y, this.unitSize.width, this.unitSize.height)
     }
 
@@ -330,20 +364,4 @@ class Plant {
         this.draw()
     }
 
-}
-
-class PlantUnit {
-    constructor({ pos }) {
-        this.pos = pos,
-            this.color = 'green',
-            this.unitSize = {
-                width: 20,
-                height: 20
-            },
-            this.growthPattern, // 'spoke', 'vine', 'ball', '?'
-            this.growthRate, // 0.1, 1.0, 1.3 - units per cycle?
-            this.unitHealth,
-            this.healthChangeWhenEaten, // -10, 0, 25
-            this.parentIndex
-    }
 }
