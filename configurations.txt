@@ -17,3 +17,15 @@ more to come
 Plant growth
 
 The longer the stem, the more chance leaves will grow. The leafrate is always multipled by the stem length (in that direction). 
+
+
+
+
+Main actor growth & age
+Introduced age and lifespan
+
+At birth, 20 x 20 with a 10 x 10 core
+Increase by unitGrowth x unitGrowth at each growth event (age/cyclePerGrowth).
+
+lifeExpectancy: the cycle number where the actor will die
+cyclesPerGrowth: the actor will grow every 'n' cycles
