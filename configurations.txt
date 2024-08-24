@@ -1,0 +1,19 @@
+The main actor's direction property uses value 1 thru 8 where
+1: North
+2: Northeast
+3: East 
+...
+8: Northwest
+
+The main actor's inner and outer colors will grant specific properties
+The outer color represents body/health/speed factors
+The inner color will be brains/choices/intuition
+
+more to come
+
+
+
+
+Plant growth
+
+The longer the stem, the more chance leaves will grow. The leafrate is always multipled by the stem length (in that direction). 
