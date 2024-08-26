@@ -12,18 +12,13 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 //---------CONSTANTS---------//
 
 const globals = {
-    percentChangeDirection: 50
+    percentChangeDirection: 50,
+    initNumPlants: 6
 }
 
 //---------FUNCTIONS--------------//
 
 //Inititalizations
-
-function placePlants() {
-    plant1.draw()
-    plant2.draw()
-    plant3.draw()
-}
 
 //Utilities
 
@@ -34,7 +29,10 @@ function getRnd(max) {
 
 //---------INSTANTIATIONS-----------//
 
-const actor = new Actor({
+const actors = []
+const plants = []
+
+actors[0] = new Actor({
     pos: {
         x: canvas.width / 2,
         y: canvas.height / 2
@@ -43,44 +41,27 @@ const actor = new Actor({
     direction: getRnd(8)
 })
 
-const plant1 = new Plant({
-    pos: {
-        x: getRnd(canvas.width - 20),
-        y: getRnd(canvas.height - 20)
-    }
-})
-
-const plant2 = new Plant({
-    pos: {
-        x: getRnd(canvas.width - 20),
-        y: getRnd(canvas.height - 20)
-    }
-})
-
-const plant3 = new Plant({
-    pos: {
-        x: getRnd(canvas.width - 20),
-        y: getRnd(canvas.height - 20)
-    }
-})
-
-//First Draws
-
-
+for (var i = 0; i < globals.initNumPlants; i++) {
+    plants[i] = new Plant({
+        pos: {
+            x: getRnd(canvas.width - 20),
+            y: getRnd(canvas.height - 20)
+        }
+    })
+}
 
 //----------ANIMATION-------------//
 
 function animate() {
     //c.fillStyle = 'black'
     //c.fillRect(0, 0, canvas.width, canvas.height)
-    actor.update()
-    plant1.update()
-    plant2.update()
-    plant3.update()
-    placePlants()
+    actors[0].update()
+    for (var i = 0; i < globals.initNumPlants; i++) {
+        plants[i].update()
+    }
     setTimeout(() => {
         window.requestAnimationFrame(animate)
-    }, "10")
+    }, "66")
 }
 
 animate()
