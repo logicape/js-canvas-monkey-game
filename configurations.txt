@@ -18,7 +18,7 @@ Plant growth
 
 The longer the stem, the more chance leaves will grow. The leafrate is always multipled by the stem length (in that direction). 
 
-
+Created an array of leaves (leafs!) for each plant instance. They currently know thier location and they (supposedly) prevent themselves from doubling up. There's now a redraw() for plants.
 
 
 Main actor growth & age
