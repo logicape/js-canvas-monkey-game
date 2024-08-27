@@ -30,7 +30,6 @@ class Actor {
                 case 1: // --N--
                     if (this.pos.y - this.velocity < 0) {
                         this.pos.y = 0
-                        //this.velocity = 0
                         this.direction = 5 // S reverse direction
                     } else {
                         this.pos.y -= this.velocity
@@ -40,7 +39,6 @@ class Actor {
                     //check x
                     if (this.pos.x + this.velocity + this.size.width > canvas.width) {
                         this.pos.x = canvas.width - this.size.width
-                        //this.velocity = 0
                         this.direction = 8 // NW turn direction
                     } else {
                         this.pos.x += this.velocity
@@ -48,7 +46,6 @@ class Actor {
                     //check y
                     if (this.pos.y - this.velocity < 0) {
                         this.pos.y = 0
-                        //this.velocity = 0
                         this.direction = 6 // S finish reverse direction
                     } else {
                         this.pos.y -= this.velocity
@@ -57,7 +54,6 @@ class Actor {
                 case 3: // --E--
                     if (this.pos.x + this.velocity + this.size.width > canvas.width) {
                         this.pos.x = canvas.width - this.size.width
-                        //this.velocity = 0
                         this.direction = 7 // W reverse direction
                     } else {
                         this.pos.x += this.velocity
@@ -67,7 +63,6 @@ class Actor {
                     //check x
                     if (this.pos.x + this.velocity + this.size.width > canvas.width) {
                         this.pos.x = canvas.width - this.size.width
-                        //this.velocity = 0
                         this.direction = 6 // SW turn direction
                     } else {
                         this.pos.x += this.velocity
@@ -75,7 +70,6 @@ class Actor {
                     //check y
                     if (this.pos.y + this.velocity + this.size.height > canvas.height) {
                         this.pos.y = canvas.height - this.size.height
-                        //this.velocity = 0
                         this.direction = 8 // NE finish reverse direction
                     } else {
                         this.pos.y += this.velocity
@@ -84,7 +78,6 @@ class Actor {
                 case 5: // --S--
                     if (this.pos.y + this.velocity + this.size.height > canvas.height) {
                         this.pos.y = canvas.height - this.size.height
-                        //this.velocity = 0
                         this.direction = 1 // N reverse direction
                     } else {
                         this.pos.y += this.velocity
@@ -94,7 +87,6 @@ class Actor {
                     //check x
                     if (this.pos.x - this.velocity < 0) {
                         this.pos.x = 0
-                        //this.velocity = 0
                         this.direction = 4 // SE turn direction
                     } else {
                         this.pos.x -= this.velocity
@@ -102,7 +94,6 @@ class Actor {
                     //check y
                     if (this.pos.y + this.velocity + this.size.height > canvas.height) {
                         this.pos.y = canvas.height - this.size.height
-                        //this.velocity = 0
                         this.direction = 2 // NE finish reverse direction
                     } else {
                         this.pos.y += this.velocity
@@ -111,7 +102,6 @@ class Actor {
                 case 7: // --W--
                     if (this.pos.x - this.velocity < 0) {
                         this.pos.x = 0
-                        //this.velocity = 0
                         this.direction = 3 // E reverse direction
                     } else {
                         this.pos.x -= this.velocity
@@ -121,7 +111,6 @@ class Actor {
                     //check x
                     if (this.pos.x - this.velocity < 0) {
                         this.pos.x = 0
-                        //this.velocity = 0
                         this.direction = 2 // NE turn direction
                     } else {
                         this.pos.x -= this.velocity
@@ -129,7 +118,6 @@ class Actor {
                     //check y
                     if (this.pos.y - this.velocity < 0) {
                         this.pos.y = 0
-                        //this.velocity = 0
                         this.direction = 4 // SE finish reverse direction
                     } else {
                         this.pos.y -= this.velocity
@@ -216,11 +204,12 @@ class Plant {
         this.pos = pos,
             this.color = {
                 leaf: 'green',
-                stem: 'brown'
+                stem: 'saddlebrown',
+                trunk: 'darkgoldenrod'
             },
             this.unitSize = {
-                width: 20,
-                height: 20
+                width: globals.plantUnitSize,
+                height: globals.plantUnitSize
             },
             this.stemLength = {
                 n: 0,
@@ -259,12 +248,10 @@ class Plant {
 
     growLeaf(direction) {
         let node, evalX, evalY, leafExists
-        c.fillStyle = this.color.leaf
         switch (direction) {
             case 1:
                 node = getRnd(this.stemLength.n)
                 if (getRnd(100) < 50) {
-                    //left
                     evalX = this.pos.x - this.unitSize.width
                 } else {
                     evalX = this.pos.x + this.unitSize.width
@@ -275,7 +262,6 @@ class Plant {
                 node = getRnd(this.stemLength.e)
                 evalX = this.pos.x - this.unitSize.width * node
                 if (getRnd(100) < 50) {
-                    //top
                     evalY = this.pos.y - this.unitSize.height
                 } else {
                     evalY = this.pos.y + this.unitSize.height
@@ -284,7 +270,6 @@ class Plant {
             case 3:
                 node = getRnd(this.stemLength.s)
                 if (getRnd(100) < 50) {
-                    //left
                     evalX = this.pos.x - this.unitSize.width
                 } else {
                     evalX = this.pos.x + this.unitSize.width
@@ -295,7 +280,6 @@ class Plant {
                 node = getRnd(this.stemLength.w)
                 evalX = this.pos.x + this.unitSize.width * node
                 if (getRnd(100) < 50) {
-                    //top
                     evalY = this.pos.y - this.unitSize.height
                 } else {
                     evalY = this.pos.y + this.unitSize.height
@@ -318,6 +302,7 @@ class Plant {
         }
         if (!leafExists) {
             //draw leaf to canvas
+            c.fillStyle = this.color.leaf
             c.fillRect(evalX, evalY, this.unitSize.width, this.unitSize.height)
             //push to leafs array
             this.leafs.push(
@@ -325,7 +310,8 @@ class Plant {
                     pos: {
                         x: evalX,
                         y: evalY
-                    }
+                    },
+                    color: 'green'
                 })
             )
         } else {
@@ -387,32 +373,28 @@ class Plant {
         }
     }
 
-    draw() {
-        c.fillStyle = this.color.stem
-        c.fillRect(this.pos.x, this.pos.y, this.unitSize.width, this.unitSize.height)
-    }
-
     redraw() {
+        //trunk
+        c.fillStyle = this.color.trunk
+        c.fillRect(this.pos.x, this.pos.y, this.unitSize.width, this.unitSize.height)
         //stems
         c.fillStyle = this.color.stem
-        //base
-        c.fillRect(this.pos.x, this.pos.y, this.unitSize.width, this.unitSize.height)
         //four directions
-        for (var i = 0; i <= this.stemLength.n; i++) {
+        for (var i = 1; i <= this.stemLength.n; i++) {
         	c.fillRect(this.pos.x, this.pos.y - (this.unitSize.height * i), this.unitSize.width, this.unitSize.height)
         }
-        for (var i = 0; i <= this.stemLength.e; i++) {
+        for (var i = 1; i <= this.stemLength.e; i++) {
         	c.fillRect(this.pos.x + (this.unitSize.width * i), this.pos.y, this.unitSize.width, this.unitSize.height)
         }
-        for (var i = 0; i <= this.stemLength.s; i++) {
+        for (var i = 1; i <= this.stemLength.s; i++) {
         	c.fillRect(this.pos.x, this.pos.y + (this.unitSize.height * i), this.unitSize.width, this.unitSize.height)
         }
-        for (var i = 0; i <= this.stemLength.w; i++) {
+        for (var i = 1; i <= this.stemLength.w; i++) {
         	c.fillRect(this.pos.x - (this.unitSize.width * i), this.pos.y, this.unitSize.width, this.unitSize.height)
         }
         //leafs
-        c.fillStyle = this.color.leaf
         for (var i = 0; i < this.leafs.length; i++) {
+            c.fillStyle = this.leafs[i].color
             c.fillRect(this.leafs[i].pos.x, this.leafs[i].pos.y, this.unitSize.width, this.unitSize.height)
         }
     }
@@ -431,9 +413,9 @@ class Leaf extends Plant {
         color
     }) {
         super({
-            color,
             unitSize
         })
         this.pos = pos
+        this.color = color
     }
 }
