@@ -12,6 +12,7 @@ The inner color will be brains/choices/intuition
 more to come
 
 
+Abstracted plants and actors to arrays to spawn and unspawn many. 
 
 
 Plant growth
@@ -29,3 +30,10 @@ Increase by unitGrowth x unitGrowth at each growth event (age/cyclePerGrowth).
 
 lifeExpectancy: the cycle number where the actor will die
 cyclesPerGrowth: the actor will grow every 'n' cycles
+
+
+COLLSION! 
+
+Can't run into trunks.
+Can run (under) thru branches
+Run into leaves = special: For now, they disappear

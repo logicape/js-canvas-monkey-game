@@ -13,7 +13,8 @@ c.fillRect(0, 0, canvas.width, canvas.height)
 
 const globals = {
     percentChangeDirection: 50,
-    initNumPlants: 6
+    initNumPlants: 6,
+    plantUnitSize: 20
 }
 
 //---------FUNCTIONS--------------//
@@ -25,6 +26,13 @@ const globals = {
 function getRnd(max) {
     const maxFloored = Math.floor(max);
     return Math.floor(Math.random() * maxFloored + 1)
+}
+
+function actorPlantCollision(actor, plant) {
+    return actor.pos.x + actor.size.width >= plant.pos.x &&
+        actor.pos.x <= plant.pos.x + plant.unitSize.width &&
+        actor.pos.y + actor.size.height >= plant.pos.y &&
+        actor.pos.y <= plant.pos.y + plant.unitSize.height
 }
 
 //---------INSTANTIATIONS-----------//
@@ -44,8 +52,8 @@ actors[0] = new Actor({
 for (var i = 0; i < globals.initNumPlants; i++) {
     plants[i] = new Plant({
         pos: {
-            x: getRnd(canvas.width - 20),
-            y: getRnd(canvas.height - 20)
+            x: getRnd(canvas.width - globals.plantUnitSize),
+            y: getRnd(canvas.height - globals.plantUnitSize)
         }
     })
 }
@@ -53,15 +61,50 @@ for (var i = 0; i < globals.initNumPlants; i++) {
 //----------ANIMATION-------------//
 
 function animate() {
-    //c.fillStyle = 'black'
-    //c.fillRect(0, 0, canvas.width, canvas.height)
+
+    //update objects
     actors[0].update()
     for (var i = 0; i < globals.initNumPlants; i++) {
         plants[i].update()
     }
+
+    //check for Trunk collisions
+    for (var i = 0; i < globals.initNumPlants; i++) {
+        if (actorPlantCollision(actors[0], plants[i])) {
+            handleTrunkCollision(actors[0])
+        }
+    }
+
+    //check for Leaf collisions
+    for (var i = 0; i < globals.initNumPlants; i++) {
+        for (var j = 0; j < plants[i].leafs.length; j++) {
+            if (actorPlantCollision(actors[0], plants[i].leafs[j])) {
+                handleLeafCollision(actors[0], plants[i].leafs[j])
+
+            }
+        }
+    }
+
+    //set framerate
     setTimeout(() => {
         window.requestAnimationFrame(animate)
     }, "66")
 }
 
 animate()
+
+//-------------CoLLISION---------------//
+
+function handleTrunkCollision(actor) {
+    actor.direction += 4
+    if (actor.direction > 8) {
+        actor.direction -= 8
+    }
+}
+
+function handleLeafCollision(actor, leaf) {
+    console.log("hit a leaf")
+    leaf.color = 'black'
+    c.fillStyle.color = leaf.color
+    c.fillRect(leaf.pos.x, leaf.pos.y, leaf.unitSize.width, leaf.unitSize.height)
+}
